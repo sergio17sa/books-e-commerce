@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  role  String
+  users User[]
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  email        String
+  password     String
+  address      String
+  profileImage String
+  roleId       Int
+  role         Role          @relation(fields: [roleId], references: [id])
+  shoppingCart ShoppingCart?
+}
+
+model Category {
+  id           Int            @id @default(autoincrement())
+  name         String
+  books        Book[]
+  otherProduct OtherProduct[]
+}
+
+model Book {
+  id                  Int                @id @default(autoincrement())
+  category            Category           @relation(fields: [categoryId], references: [id])
+  categoryId          Int
+  ISBN                String             @unique
+  title               String
+  quantity            Int
+  editorial           String
+  price               String
+  ItemsShoppingCart   ItemsShoppingCart? @relation(fields: [itemsShoppingCartId], references: [id])
+  itemsShoppingCartId Int?
+  stock               Stock?
+  purchase            Purchase           @relation(fields: [purchaseId], references: [id])
+  purchaseId          Int
+}
+
+model OtherProduct {
+  id                  Int                @id @default(autoincrement())
+  category            Category           @relation(fields: [categoryId], references: [id])
+  categoryId          Int
+  name                String
+  quantity            Int
+  code                String             @unique
+  price               String
+  ItemsShoppingCart   ItemsShoppingCart? @relation(fields: [itemsShoppingCartId], references: [id])
+  itemsShoppingCartId Int?
+  stock               Stock?
+  purchase            Purchase           @relation(fields: [purchaseId], references: [id])
+  purchaseId          Int
+}
+
+model ShoppingCart {
+  id               Int                 @id @default(autoincrement())
+  date             String
+  user             User                @relation(fields: [userId], references: [id])
+  userId           Int                 @unique
+  itemShoppingCart ItemsShoppingCart[]
+}
+
+model ItemsShoppingCart {
+  id             Int            @id @default(autoincrement())
+  quantity       Int
+  shoppingCartId Int
+  shoppingCart   ShoppingCart   @relation(fields: [shoppingCartId], references: [id])
+  book           Book[]
+  otherProduct   OtherProduct[]
+}
+
+model Stock {
+  id             Int          @id @default(autoincrement())
+  quantity       Int
+  bookId         Int          @unique
+  otherProductId Int          @unique
+  book           Book         @relation(fields: [bookId], references: [id])
+  otherProduct   OtherProduct @relation(fields: [otherProductId], references: [id])
+}
+
+model Purchase {
+  id           Int            @id @default(autoincrement())
+  book         Book[]
+  otherProduct OtherProduct[]
+  quantity     Int
+  date         String
+  supplier     Supplier       @relation(fields: [supplierId], references: [id])
+  supplierId   Int
+}
+
+model Supplier {
+  id       Int        @id @default(autoincrement())
+  name     String
+  address  String
+  Purchase Purchase[]
+}

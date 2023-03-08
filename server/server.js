@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const CheckingDbConnection = require('../prisma/check_db_connection')
+
 require('dotenv').config();
 
 class Server {
@@ -9,6 +11,8 @@ class Server {
     this.usersPath = 'api/users';
     this.authPath = 'api/auth';
 
+    this.DbConnectionCheck = CheckingDbConnection.main();
+    
     //this.dbConection();
 
     this.middlewares();
