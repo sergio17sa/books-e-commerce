@@ -16,15 +16,18 @@ class Token {
     }
   }
 
-  static decryptJWT(req, res) {
+  static decryptJWT(req, res, next) {
     let token;
     try {
       const authorization = req.get('Authorization');
       if (authorization && authorization.toLowerCase().startsWith('bearer')) {
         token = authorization.substring(7);
       }
+      if (!token) {
+        return res.status(401).json({ msg: 'invalid token' });
+      }
       const decodeToken = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
-      return decodeToken;
+      next();
     } catch (error) {
       return error;
     }

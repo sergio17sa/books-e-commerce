@@ -22,6 +22,49 @@ class OtherProductsController {
     }
     res.status(200).json(newOtherProducts);
   }
+
+  static async UpdateQuantityOtherProduct(otherProductId, quantity) {
+    let newOtherProductQuantity;
+    let OtherProduct;
+
+    try {
+      OtherProduct = await prisma.OtherProduct.findUnique({
+        where: {
+          id: Number(otherProductId),
+        },
+      });
+      const currentQuantity = OtherProduct.quantity;
+
+      newOtherProductQuantity = await prisma.OtherProduct.update({
+        where: {
+          id: Number(otherProductId),
+        },
+        data: {
+          quantity: currentQuantity + quantity,
+        },
+      });
+
+      return newOtherProductQuantity.quantity;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  static async getAllOtherProducts() {
+    let otherProducts;
+    try {
+      otherProducts = await prisma.OtherProduct.findMany({
+        select: {
+          name: true,
+          price: true,
+        },
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+
+    return otherProducts;
+  }
 }
 
 module.exports = OtherProductsController;

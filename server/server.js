@@ -19,8 +19,6 @@ class Server {
     this.authPath = '/api/auth';
 
     this.DbConnectionCheck = CheckingDbConnection.main();
-    
-    //this.dbConection();
 
     this.middlewares();
 
