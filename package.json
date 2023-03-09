@@ -4,7 +4,7 @@
   "description": "API REST NODEJS",
   "main": "app.js",
   "scripts": {
-    "dev": "npx nodemon ."
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,5 @@
     "prisma": "^4.11.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.21"
   }
 }
