@@ -91,7 +91,7 @@ model Stock {
   otherProductId Int?
   supplier       Supplier      @relation(fields: [supplierId], references: [id])
   supplierId     Int
-  type           String        
+  type           String
 }
 
 model Supplier {

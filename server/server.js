@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const CheckingDbConnection = require('../prisma/check_db_connection')
+const CheckingDbConnection = require('../prisma/check_db_connection');
 
 require('dotenv').config();
 
@@ -35,10 +35,10 @@ class Server {
     this.app.use(this.usersPath, require('../routes/user_routes'));
     this.app.use(this.categoryPath, require('../routes/category_routes'));
     this.app.use(this.booksPath, require('../routes/books_routes'));
-    this.app.use(this.otherProductsPath, require('../routes/otherProducts_routes'));
+    this.app.use(this.otherProductsPath,require('../routes/otherProducts_routes'));
     this.app.use(this.suppliersPath, require('../routes/supplier_routes'));
     this.app.use(this.stockPath, require('../routes/stock_routes'));
-    this.app.use(this.shoppingCartPath, require('../routes/shoppingCart_routes'));
+    this.app.use(this.shoppingCartPath,require('../routes/shoppingCart_routes'));
     this.app.use(this.authPath, require('../routes/auth_routes'));
   }
 

@@ -18,10 +18,9 @@ class BooksController {
         },
       });
     } catch (error) {
-      console.log(error);
-      return res.status(401).json(error);
+      return res.status(500).json(error);
     }
-    res.status(200).json(newBook);
+    res.status(201).json(newBook);
   }
 
   static async UpdateQuantityBook(bookId, quantity) {

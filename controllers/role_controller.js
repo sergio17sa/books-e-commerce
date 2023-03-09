@@ -12,10 +12,9 @@ class RoleController {
         },
       });
     } catch (error) {
-      console.log(error);
       return res.status(401).json(error);
     }
-    res.status(200).json(newRole);
+    res.status(201).json(newRole);
   }
 }
 

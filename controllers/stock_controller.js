@@ -11,7 +11,7 @@ class StockController {
     let newOtherProductQuantity;
     if (bookId && otherProductId) {
       res
-        .status(200)
+        .status(201)
         .json({ msg: 'The Stock register only accepts one type of product' });
     }
     try {
@@ -36,14 +36,15 @@ class StockController {
               quantity
             ))
         : null;
-
     } catch (error) {
-      console.log(error);
       res.status(500).json({ error: 'Could not create stock' });
     }
     res
-      .status(200)
-      .json({ stockUpdated: newStock, QuantityItemUpdated: newBookQuantity || newOtherProductQuantity});
+      .status(201)
+      .json({
+        stockUpdated: newStock,
+        QuantityItemUpdated: newBookQuantity || newOtherProductQuantity,
+      });
   }
 
   static async getProductTotal(req, res) {

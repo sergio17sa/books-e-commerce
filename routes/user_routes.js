@@ -2,8 +2,6 @@ const { Router } = require('express');
 const UserController = require('../controllers/user_controller');
 const Token = require('../helpers/token');
 
-
-
 const router = Router();
 
 router.post('/', UserController.postUser);

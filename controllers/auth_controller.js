@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+
 const bcrypt = require('bcrypt');
 const Token = require('../helpers/token');
 
@@ -14,16 +15,13 @@ class AuthController {
           email: email,
         },
       });
-
-      console.log(user);
+      
     } catch (error) {
-      console.log(error);
       return res
         .status(500)
         .json({ msg: 'it was not possible to log in the user' });
     }
 
-    //Chek if email exist in db
     if (!user) {
       return res.status(500).json({ msg: 'The user does not exist in db' });
     }
@@ -37,7 +35,7 @@ class AuthController {
 
     const token = await Token.CreateToken(user.id);
 
-    return res.status(400).json({ user, token });
+    return res.status(200).json({ user, token });
   }
 }
 

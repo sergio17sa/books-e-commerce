@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
-const ItemsShoppingCartController = require('./items_Shopping_Cart_controller');
 const prisma = new PrismaClient();
+const ItemsShoppingCartController = require('./items_Shopping_Cart_controller');
 
 class ShoppingCartController {
   static async PostShoppingCart(req, res) {
@@ -39,42 +39,39 @@ class ShoppingCartController {
       }
 
       // Check if item is in the cart
-      if(bookId){
-          itemsShoppingCart = cart.itemShoppingCart.find(
-            (item) => item.bookId == bookId 
-          );
+      if (bookId) {
+        itemsShoppingCart = cart.itemShoppingCart.find(
+          (item) => item.bookId == bookId
+        );
       }
 
-      if(otherProductId){
+      if (otherProductId) {
         itemsShoppingCart = cart.itemShoppingCart.find(
-            (item) => item.otherProductId == otherProductId 
-          );
+          (item) => item.otherProductId == otherProductId
+        );
       }
 
       // If the item does not exist. We create it, otherwise we update its quantity
       if (!itemsShoppingCart) {
-        itemsShoppingCart =
-           ItemsShoppingCartController.PostItemsShoppingCart(
-            cart,
-            quantity,
-            bookId,
-            otherProductId 
-          );
+        itemsShoppingCart = ItemsShoppingCartController.PostItemsShoppingCart(
+          cart,
+          quantity,
+          bookId,
+          otherProductId
+        );
       } else {
-        itemsShoppingCart =
-           ItemsShoppingCartController.UpdateItemsShoppingCart(
-            itemsShoppingCart,
-            quantity
-          );
+        itemsShoppingCart = ItemsShoppingCartController.UpdateItemsShoppingCart(
+          itemsShoppingCart,
+          quantity
+        );
       }
 
       //update changes in the shopping cart
       cart = await ShoppingCartController.UpdateShoppingCart(cart);
     } catch (error) {
-      console.log(error);
       return res.status(401).json(error);
     }
-    res.status(200).json({ msg: 'Shopping Cart updated successfully', cart });
+    res.status(201).json({ msg: 'Shopping Cart updated successfully', cart });
   }
 
   static async UpdateShoppingCart(cart) {

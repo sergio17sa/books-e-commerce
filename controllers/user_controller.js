@@ -1,7 +1,9 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+
 const bcrypt = require('bcrypt');
 const Token = require('../helpers/token');
+
 const BooksController = require('./books_controller');
 const OtherProductsController = require('./other_products_controller');
 
@@ -37,9 +39,9 @@ class UserController {
       token = await Token.CreateToken(user.id);
     } catch (error) {
       console.log(error);
-      return res.status(401).json(error);
+      return res.status(500).json(error);
     }
-    res.status(200).json({ user, token });
+    res.status(201).json({ user, token });
   }
 
   static async UpdateUser(req, res) {
@@ -59,9 +61,9 @@ class UserController {
       });
     } catch (error) {
       console.log(error);
-      return res.status(401).json(error);
+      return res.status(500).json(error);
     }
-    res.status(200).json(userUpdated);
+    res.status(201).json(userUpdated);
   }
 
   static async GetAllProducts(req, res) {

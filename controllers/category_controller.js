@@ -6,16 +6,15 @@ class CategoryController {
     const { name } = req.body;
     let newCategory;
     try {
-        newCategory = await prisma.Category.create({
+      newCategory = await prisma.Category.create({
         data: {
           name,
         },
       });
     } catch (error) {
-      console.log(error);
-      return res.status(401).json(error);
+      return res.status(500).json(error);
     }
-    res.status(200).json(newCategory);
+    res.status(201).json(newCategory);
   }
 }
 

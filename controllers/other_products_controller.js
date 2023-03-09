@@ -17,10 +17,9 @@ class OtherProductsController {
         },
       });
     } catch (error) {
-      console.log(error);
       return res.status(401).json(error);
     }
-    res.status(200).json(newOtherProducts);
+    res.status(201).json(newOtherProducts);
   }
 
   static async UpdateQuantityOtherProduct(otherProductId, quantity) {

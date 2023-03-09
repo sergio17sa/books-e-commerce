@@ -12,7 +12,7 @@ class Token {
 
       return token;
     } catch (error) {
-      throw error;
+      throw new Error(error);
     }
   }
 
@@ -29,7 +29,7 @@ class Token {
       const decodeToken = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
       next();
     } catch (error) {
-      return error;
+      throw new Error(error);
     }
   }
 }
