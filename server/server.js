@@ -16,7 +16,7 @@ class Server {
     this.suppliersPath = '/api/suppliers';
     this.stockPath = '/api/stock';
     this.shoppingCartPath = '/api/shoppingCart';
-    //this.authPath = 'api/auth';
+    this.authPath = '/api/auth';
 
     this.DbConnectionCheck = CheckingDbConnection.main();
     
@@ -41,7 +41,7 @@ class Server {
     this.app.use(this.suppliersPath, require('../routes/supplier_routes'));
     this.app.use(this.stockPath, require('../routes/stock_routes'));
     this.app.use(this.shoppingCartPath, require('../routes/shoppingCart_routes'));
-    // this.app.use(this.authPath);
+    this.app.use(this.authPath, require('../routes/auth_routes'));
   }
 
   Listen() {
