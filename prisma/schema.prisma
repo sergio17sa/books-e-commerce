@@ -19,8 +19,8 @@ model User {
   lastName     String
   email        String
   password     String
-  address      String
-  profileImage String
+  address      String?
+  profileImage String?
   roleId       Int
   role         Role          @relation(fields: [roleId], references: [id])
   shoppingCart ShoppingCart?
@@ -34,75 +34,68 @@ model Category {
 }
 
 model Book {
-  id                  Int                @id @default(autoincrement())
-  category            Category           @relation(fields: [categoryId], references: [id])
-  categoryId          Int
-  ISBN                String             @unique
-  title               String
-  quantity            Int
-  editorial           String
-  price               String
-  ItemsShoppingCart   ItemsShoppingCart? @relation(fields: [itemsShoppingCartId], references: [id])
-  itemsShoppingCartId Int?
-  stock               Stock?
-  purchase            Purchase           @relation(fields: [purchaseId], references: [id])
-  purchaseId          Int
+  id                Int                 @id @default(autoincrement())
+  categoryId        Int
+  category          Category            @relation(fields: [categoryId], references: [id])
+  ISBN              String              @unique
+  title             String
+  quantity          Int
+  editorial         String
+  price             String
+  ItemsShoppingCart ItemsShoppingCart[]
+  stock             Stock[]
 }
 
 model OtherProduct {
-  id                  Int                @id @default(autoincrement())
-  category            Category           @relation(fields: [categoryId], references: [id])
-  categoryId          Int
-  name                String
-  quantity            Int
-  code                String             @unique
-  price               String
-  ItemsShoppingCart   ItemsShoppingCart? @relation(fields: [itemsShoppingCartId], references: [id])
-  itemsShoppingCartId Int?
-  stock               Stock?
-  purchase            Purchase           @relation(fields: [purchaseId], references: [id])
-  purchaseId          Int
+  id                Int                 @id @default(autoincrement())
+  categoryId        Int
+  category          Category            @relation(fields: [categoryId], references: [id])
+  name              String
+  quantity          Int
+  code              String              @unique
+  price             String
+  ItemsShoppingCart ItemsShoppingCart[]
+  stock             Stock[]
 }
 
 model ShoppingCart {
   id               Int                 @id @default(autoincrement())
-  date             String
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
   user             User                @relation(fields: [userId], references: [id])
   userId           Int                 @unique
   itemShoppingCart ItemsShoppingCart[]
 }
 
 model ItemsShoppingCart {
-  id             Int            @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   quantity       Int
+  shoppingCart   ShoppingCart  @relation(fields: [shoppingCartId], references: [id])
   shoppingCartId Int
-  shoppingCart   ShoppingCart   @relation(fields: [shoppingCartId], references: [id])
-  book           Book[]
-  otherProduct   OtherProduct[]
+  book           Book?         @relation(fields: [bookId], references: [id])
+  bookId         Int?
+  otherProduct   OtherProduct? @relation(fields: [otherProductId], references: [id])
+  otherProductId Int?
 }
 
 model Stock {
-  id             Int          @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   quantity       Int
-  bookId         Int          @unique
-  otherProductId Int          @unique
-  book           Book         @relation(fields: [bookId], references: [id])
-  otherProduct   OtherProduct @relation(fields: [otherProductId], references: [id])
-}
-
-model Purchase {
-  id           Int            @id @default(autoincrement())
-  book         Book[]
-  otherProduct OtherProduct[]
-  quantity     Int
-  date         String
-  supplier     Supplier       @relation(fields: [supplierId], references: [id])
-  supplierId   Int
+  book           Book?         @relation(fields: [bookId], references: [id])
+  bookId         Int?
+  otherProduct   OtherProduct? @relation(fields: [otherProductId], references: [id])
+  otherProductId Int?
+  supplier       Supplier      @relation(fields: [supplierId], references: [id])
+  supplierId     Int
 }
 
 model Supplier {
-  id       Int        @id @default(autoincrement())
-  name     String
-  address  String
-  Purchase Purchase[]
+  id      Int     @id @default(autoincrement())
+  name    String
+  address String
+  stock   Stock[]
 }

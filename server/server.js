@@ -8,8 +8,15 @@ class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT || 3000;
-    this.usersPath = 'api/users';
-    this.authPath = 'api/auth';
+    this.rolePath = '/api/role';
+    this.usersPath = '/api/users';
+    this.categoryPath = '/api/categories';
+    this.booksPath = '/api/books';
+    this.otherProductsPath = '/api/otherProducts';
+    this.suppliersPath = '/api/suppliers';
+    this.stockPath = '/api/stock';
+    this.shoppingCartPath = '/api/shoppingCart';
+    //this.authPath = 'api/auth';
 
     this.DbConnectionCheck = CheckingDbConnection.main();
     
@@ -17,7 +24,7 @@ class Server {
 
     this.middlewares();
 
-    //this.routes();
+    this.routes();
   }
 
   middlewares() {
@@ -26,8 +33,15 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.usersPath);
-    this.app.use(this.authPath);
+    this.app.use(this.rolePath, require('../routes/role_routes'));
+    this.app.use(this.usersPath, require('../routes/user_routes'));
+    this.app.use(this.categoryPath, require('../routes/category_routes'));
+    this.app.use(this.booksPath, require('../routes/books_routes'));
+    this.app.use(this.otherProductsPath, require('../routes/otherProducts_routes'));
+    this.app.use(this.suppliersPath, require('../routes/supplier_routes'));
+    this.app.use(this.stockPath, require('../routes/stock_routes'));
+    this.app.use(this.shoppingCartPath, require('../routes/shoppingCart_routes'));
+    // this.app.use(this.authPath);
   }
 
   Listen() {
