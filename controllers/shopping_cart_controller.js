@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const ItemsShoppingCartController = require('./items_Shopping_Cart_controller');
 const prisma = new PrismaClient();
 
 class ShoppingCartController {
@@ -8,25 +9,27 @@ class ShoppingCartController {
     let cart;
     let itemsShoppingCart;
 
-    if(bookId && otherProductId ){
-       return res.status(200).json({msg: "Only one type of products can added at a time"})
-    } 
+    if (bookId && otherProductId) {
+      return res
+        .status(200)
+        .json({ msg: 'Only one type of products can added at a time' });
+    }
 
     try {
-      //buscar is el usuario tiene un carrito o no
+      // check if the user have a cart
       cart = await prisma.ShoppingCart.findFirst({
         where: { userId },
         include: {
           itemShoppingCart: {
             include: {
               book: true,
-              otherProduct: true
+              otherProduct: true,
             },
           },
         },
       });
 
-      // si el usuario no tiene carrito lo crea y si lo tiene responde con el carrito
+      // if cart does not exist. We create a cart
       if (!cart) {
         cart = await prisma.ShoppingCart.create({
           data: {
@@ -35,57 +38,68 @@ class ShoppingCartController {
         });
       }
 
-      // buscar si el producto ya se encuentra en el carrito
-      itemsShoppingCart = cart.itemShoppingCart.find(
-        (item) => item.bookId == bookId,
-        (item) => item.otherProductId == otherProductId
-      );
-      
-      console.log(itemsShoppingCart)
-      if (!itemsShoppingCart) {
-        itemsShoppingCart = await prisma.ItemsShoppingCart.create({
-          data: {
-            quantity,
-            shoppingCartId: cart.id,
-            bookId,
-            otherProductId,
-          },
-        });
-   
-      } else {
-        itemsShoppingCart = await prisma.ItemsShoppingCart.update({
-          where: {
-            id: itemsShoppingCart.id,
-          },
-          data: {
-            quantity: itemsShoppingCart.quantity + quantity,
-          },
-        });
+      // Check if item is in the cart
+      if(bookId){
+          itemsShoppingCart = cart.itemShoppingCart.find(
+            (item) => item.bookId == bookId 
+          );
       }
 
-      //actualizo los cambios en carrito
-      cart = await prisma.ShoppingCart.update({
-        where: {
-          id: cart.id,
-        },
-        data: {
-            updatedAt: new Date(),
-          },
-        include: {
-          itemShoppingCart: {
-            include: {
-              book: true,
-              otherProduct: true
-            },
-          },
-        },
-      });
+      if(otherProductId){
+        itemsShoppingCart = cart.itemShoppingCart.find(
+            (item) => item.otherProductId == otherProductId 
+          );
+      }
 
+      // If the item does not exist. We create it, otherwise we update its quantity
+      if (!itemsShoppingCart) {
+        itemsShoppingCart =
+           ItemsShoppingCartController.PostItemsShoppingCart(
+            cart,
+            quantity,
+            bookId,
+            otherProductId 
+          );
+      } else {
+        itemsShoppingCart =
+           ItemsShoppingCartController.UpdateItemsShoppingCart(
+            itemsShoppingCart,
+            quantity
+          );
+      }
+
+      //update changes in the shopping cart
+      cart = await ShoppingCartController.UpdateShoppingCart(cart);
     } catch (error) {
       console.log(error);
       return res.status(401).json(error);
     }
     res.status(200).json({ msg: 'Shopping Cart updated successfully', cart });
+  }
+
+  static async UpdateShoppingCart(cart) {
+    let updateCart;
+    try {
+      updateCart = await prisma.ShoppingCart.update({
+        where: {
+          id: cart.id,
+        },
+        data: {
+          updatedAt: new Date(),
+        },
+        include: {
+          itemShoppingCart: {
+            include: {
+              book: true,
+              otherProduct: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+    return updateCart;
   }
 }
 
